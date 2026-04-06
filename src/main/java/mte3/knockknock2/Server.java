@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
-import java.util.logging.Logger;
+
 
 import mte3.knockknock2.Duplexer;
 
@@ -55,7 +55,6 @@ public class Server extends Duplexer implements Runnable {
     }
 
     private static final Random RANDOM = new Random();
-    private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     private static int jokeNumber = RANDOM.nextInt(JOKES.length);
 
@@ -83,9 +82,7 @@ public class Server extends Duplexer implements Runnable {
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(PORT)) {
             while (!server.isClosed()) {
-                LOGGER.info("Waiting for clients...");
                 Socket client = server.accept();
-                LOGGER.info("Client connected!");
                 Server handler = new Server(client);
                 Thread thread = new Thread(handler);
                 thread.start();

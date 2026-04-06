@@ -8,11 +8,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.Logger;
+
 public class KnockKnockClient {
     private static final int port = 54322;
     public static String SERVER = "localhost";
-    private static final Logger LOGGER = Logger.getLogger(KnockKnockClient.class.getName());
+
     public static int getPort() {
         return port;
     }
@@ -22,7 +22,7 @@ public class KnockKnockClient {
         // print a single response line from the server if available
         if (scanner.hasNextLine()) {
             String response = scanner.nextLine();
-            LOGGER.info(response);
+            out.println(response);
         }
 
 } // sendAndReceive() method closed
@@ -34,7 +34,7 @@ public static void joke(String who, String punchLine) throws IOException {
         // read server greeting if present
         if (scanner.hasNextLine()) {
             String greeting = scanner.nextLine();
-            LOGGER.info(greeting);
+            out.println(greeting);
         }
 
         sendAndReceive(writer, "Knock! Knock!", scanner);

@@ -34,7 +34,6 @@ public class KnockKnockServer {
                 try (Socket client = server.accept();
                      Scanner sc = new Scanner(client.getInputStream());
                      PrintWriter writer = new PrintWriter(client.getOutputStream(), true)) {
-                    // send a prompt and echo the client's first line prefixed by a message
                     writer.println("Welcome to KnockKnockServer. Send a line:");
                     receiveAndSend(sc, "Server received: ", writer, true);
                 } catch (IOException e) {
