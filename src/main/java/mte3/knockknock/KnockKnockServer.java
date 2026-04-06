@@ -11,21 +11,36 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class KnockKnockServer {
-    public static int PORT = 54322;
+    public static final int port = 54322;
 
     public static void receiveAndSend(Scanner scanner,String message,PrintWriter writer,boolean concat) {
         
-        // 
-        // 
-        // 
+        if (scanner == null || writer == null) return;
+        String clientLine = null;
+        if (scanner.hasNextLine()) {
+            clientLine = scanner.nextLine();
+        }
+        String out = message;
+        if (concat && clientLine != null) {
+            out = out + clientLine;
+        }
+        writer.println(out);
+    }
 
-    } // receiveAndSend() method closed
-    
-    public static void main(String args[]) throws IOException {
-        
-        // 
-        // 
-        // 
-    
-    } // main() method closed
+    public static void main(String[] args) throws IOException {
+        try (ServerSocket server = new ServerSocket(port)) {
+            System.out.println("KnockKnockServer started on port " + port + " at " + InetAddress.getLocalHost());
+            while (!server.isClosed()) {
+                try (Socket client = server.accept();
+                     Scanner sc = new Scanner(client.getInputStream());
+                     PrintWriter writer = new PrintWriter(client.getOutputStream(), true)) {
+                    // send a prompt and echo the client's first line prefixed by a message
+                    writer.println("Welcome to KnockKnockServer. Send a line:");
+                    receiveAndSend(sc, "Server received: ", writer, true);
+                } catch (IOException e) {
+                    System.out.println("Client connection error: " + e.getMessage());
+                }
+            }
+        }
+    }
 }

@@ -8,31 +8,43 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 import java.util.Scanner;
-
+import java.util.logging.Logger;
 public class KnockKnockClient {
-    public static int PORT = 54322;
+    private static final int port = 54322;
     public static String SERVER = "localhost";
-
-    Socket = new Socket(PORT);
-
-
+    private static final Logger LOGGER = Logger.getLogger(KnockKnockClient.class.getName());
+    public static int getPort() {
+        return port;
+    }
     public static void sendAndReceive(PrintWriter writer, String message, Scanner scanner) {
-        Scanner = new Scanner()
-        
-        // 
-        // 
-        // 
+        // send the message to the server
+        writer.println(message);
+        // print a single response line from the server if available
+        if (scanner.hasNextLine()) {
+            String response = scanner.nextLine();
+            LOGGER.info(response);
+        }
 
-    } // sendAndReceive() method closed
-    
+} // sendAndReceive() method closed
 
-    public static void joke(String who,String punchLine) throws IOException {
-        
-        //  
-        // 
-        // 
+public static void joke(String who, String punchLine) throws IOException {
+    try (Socket socket = new Socket(SERVER, getPort());
+         PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+         Scanner scanner = new Scanner(socket.getInputStream())) {
+        // read server greeting if present
+        if (scanner.hasNextLine()) {
+            String greeting = scanner.nextLine();
+            LOGGER.info(greeting);
+        }
 
-    } // joke() method closed
+        sendAndReceive(writer, "Knock! Knock!", scanner);
+        sendAndReceive(writer, who, scanner);
+        sendAndReceive(writer, punchLine, scanner);
+
+        // finish conversation
+        writer.println("bye");
+    }
+} // joke() method closed
 
     public static void main(String[] args) throws IOException {
 
