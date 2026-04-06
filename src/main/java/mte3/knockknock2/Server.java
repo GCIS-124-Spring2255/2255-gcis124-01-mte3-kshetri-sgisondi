@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import mte3.knockknock2.Duplexer;
 
@@ -27,14 +28,43 @@ public class Server extends Duplexer implements Runnable {
         new Joke("Cash", "No thanks, but I'll take a peanut if you have one!")
     };
 
-    private static int JOKE_NUMBER = new Random().nextInt(JOKES.length);
+    // Provide a simple nested Joke class so the (String, String) constructor is available.
+    // This will be used only within Server; it implements the methods used by Server.run().
+    private static class Joke {
+        private final String setup;
+        private final String punchline;
+
+        public Joke(String setup, String punchline) {
+            this.setup = setup;
+            this.punchline = punchline;
+        }
+
+        public String getSetup() {
+            return setup;
+        }
+
+        public boolean isResponseValid(String response) {
+            if (response == null) return false;
+            String expected = setup + " who?";
+            return expected.equalsIgnoreCase(response.trim());
+        }
+
+        public String getPunchline() {
+            return punchline;
+        }
+    }
+
+    private static final Random RANDOM = new Random();
+    private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+
+    private static int jokeNumber = RANDOM.nextInt(JOKES.length);
 
     public Server(Socket client) throws IOException {    super(client);    }
 
     @Override
     public void run() {
         Joke joke;
-        synchronized(JOKES) {  joke = JOKES[JOKE_NUMBER];  JOKE_NUMBER = (JOKE_NUMBER+1) % JOKES.length; }
+        synchronized(JOKES) {  joke = JOKES[jokeNumber];  jokeNumber = (jokeNumber+1) % JOKES.length; }
 
         send("Knock, knock!");
         String answer = receive();
@@ -51,15 +81,15 @@ public class Server extends Duplexer implements Runnable {
     } // run() method closed
 
     public static void main(String[] args) throws IOException {
-        try(ServerSocket server = new ServerSocket(PORT)) {
-            while(true) {
-                System.out.println("Waiting for clients...");
+        try (ServerSocket server = new ServerSocket(PORT)) {
+            while (!server.isClosed()) {
+                LOGGER.info("Waiting for clients...");
                 Socket client = server.accept();
-                System.out.println("Client connected!");
+                LOGGER.info("Client connected!");
                 Server handler = new Server(client);
                 Thread thread = new Thread(handler);
                 thread.start();
             }
-        } // try { } block closed 
-    } // main ( ) method closed
+        }
+    } // main() method closed
 } // Server { } class closed
