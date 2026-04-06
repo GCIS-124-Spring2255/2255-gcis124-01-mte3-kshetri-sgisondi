@@ -39,7 +39,6 @@ public class Converter {
             double k = (tempF2 - 32) * 5.0 / 9.0 + 273.15;
             OUT.printf("%.2f F = %.2f K%n", tempF2, k);
 
-
         }
 
     } // main () method closed

@@ -24,9 +24,6 @@ public class Joke {
     public String getPunchline() {
         return punchline;
     }
-    
-	
-	
 	
     // isResponseValid() method
     public boolean isResponseValid(String response) {    return response.equals(setup + " who?");    }

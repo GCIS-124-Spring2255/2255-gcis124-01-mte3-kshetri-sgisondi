@@ -16,4 +16,11 @@ public interface TempConvert {
      * @return The converted temperature.
      */
     public double convert(double temp);
+
+    public static void main(String[] args) {
+        // Example: lambda that converts Celsius to Fahrenheit
+        TempConvert cToF = temp -> temp * 9.0 / 5.0 + 32;
+        double celsius = 25.0;
+        System.out.println("Celsius: " + celsius + " -> Fahrenheit: " + cToF.convert(celsius));
+    }
 }

@@ -11,30 +11,32 @@ import java.util.Scanner;
 
 public class KnockKnockClient {
     private static final int port = 54322;
-    public static String SERVER = "localhost";
+    private static final String server = "localhost";
+    public static String getServer() {
+        return server;
+    }
 
     public static int getPort() {
         return port;
     }
-    public static void sendAndReceive(PrintWriter writer, String message, Scanner scanner) {
-        // send the message to the server
-        writer.println(message);
-        // print a single response line from the server if available
-        if (scanner.hasNextLine()) {
-            String response = scanner.nextLine();
-            out.println(response);
-        }
-
-} // sendAndReceive() method closed
+public static void sendAndReceive(PrintWriter writer, String message, Scanner scanner) {
+    // send the message to the server
+    writer.println(message);
+    // print a single response line from the server if available
+    if (scanner.hasNextLine()) {
+        String response = scanner.nextLine();
+        System.out.println(response);
+    }
+}
 
 public static void joke(String who, String punchLine) throws IOException {
-    try (Socket socket = new Socket(SERVER, getPort());
+    try (Socket socket = new Socket(getServer(), getPort());
          PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
          Scanner scanner = new Scanner(socket.getInputStream())) {
         // read server greeting if present
         if (scanner.hasNextLine()) {
             String greeting = scanner.nextLine();
-            out.println(greeting);
+            System.out.println(greeting);
         }
 
         sendAndReceive(writer, "Knock! Knock!", scanner);
